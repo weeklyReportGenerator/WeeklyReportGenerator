@@ -261,8 +261,6 @@
 			linkElement.style.display = 'none';  // 見えないようにする
 			document.body.appendChild(linkElement);
 			linkElement.click();  // 自動でクリック
-			//const link = document.getElementById("link");
-			//link.innerHTML = `<a href="${mailToLink}">xxx</a>`;
 
 			// ★ ローカルストレージに保存 ★
 			localStorage.setItem("senderLastName_WRG_GH", senderLastName);
@@ -335,7 +333,6 @@
 			<textarea id="updates" name="updates" required></textarea><br>
 
 			<button type="button" onclick="createAndClickMailLink()">メール生成</button>
-			<div id="link"></div>
 		</form>
 	</div>
 </body>
