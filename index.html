@@ -145,6 +145,11 @@
 			}
 		}
 
+		function isSmartPhone(){
+			// 例: 幅で判定 (より厳密にはユーザーエージェントをチェック)
+			return window.innerWidth < 768; // 768px は一般的なタブレットのブレークポイント
+		}
+
 		//値の設定と画面サイズ調整実行
 		window.onload = () => {
 			document.getElementById("senderLastName").value = localStorage.getItem("senderLastName_WRG_GH") !== null ? localStorage.getItem("senderLastName_WRG_GH") : "";
@@ -167,7 +172,10 @@
 					adjustFormSize();
 				});
 				adjustTextareaHeight(textarea);
-				adjustFormSize();
+				if(!isSmartPhone()){
+					adjustFormSize();
+				}
+				
 			});
 
 			//adjustFormSize();
