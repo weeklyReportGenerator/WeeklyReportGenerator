@@ -145,9 +145,10 @@
 			}
 		}
 
-		function isSmartPhone(){
-			// 例: 幅で判定 (より厳密にはユーザーエージェントをチェック)
-			return window.innerWidth < 768; // 768px は一般的なタブレットのブレークポイント
+		// ユーザーエージェントで判定する場合 (より複雑になる場合があります)
+		function isSmartphoneByUA() {
+		    const userAgent = navigator.userAgent.toLowerCase();
+		    return /iphone|android|ipod/.test(userAgent);
 		}
 
 		//値の設定と画面サイズ調整実行
