@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>週報メール生成</title>
+	<meta name="author" content="Yuta Makitsuru">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		/* 全体のレイアウト */
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			background-color: #f4f7fc;
+		}
+		#container {
+			background-color: #fff;
+			padding: 30px;
+			border-radius: 10px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			width: 95%;
+			max-width: 700px;
+			box-sizing: border-box;
+		}
+		h3 {
+			text-align: center;
+			color: #333;
+		}
+
+		/* フォームのスタイル */
+		label {
+			display: block;
+			margin-bottom: 5px;
+			font-size: 1rem;
+			color: #555;
+		}
+		input[type="text"], input[type="email"], input[type="number"], textarea, select {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 1rem;
+			box-sizing: border-box;
+		}
+		textarea {
+			font-family: Arial, sans-serif;
+			resize: vertical;
+		}
+		#updates{
+			min-height:100px;
+		}
+
+		/* 複数選択用のスタイル */
+		select[multiple] {
+			height: 90px;
+		}
+
+		/* ボタンのスタイル */
+		button {
+			width: 100%;
+			padding: 12px;
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			font-size: 1.1rem;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+		button:hover {
+			background-color: #45a049;
+		}
+
+		/* 宛先と名前を同じ行に表示 */
+		.row {
+			display: flex;
+			justify-content: space-between;
+		}
+		.row div {
+			width: 48%;
+		}
+
+		/* 残業時間の入力フォームの修正 */
+		.overtime {
+			display: flex;
+			justify-content: space-between;
+		}
+		.overtime input {
+			width: 48%;
+		}
+
+		/* 問題点と健康状態を同じ行に配置 */
+		.issues-health {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start; /* 上揃え */
+		}
+		.issues-health div {
+			width: 48%;
+		}
+	</style>
+	<script>
+		/**
+		 * デフォルト値設定
+		 * 基本的に変化しない値を設定済 残業時間関連に関してはローカルストレージを優先的に反映
+		 */
+		const defaults = {
+			vacation: "なし",	//休暇予定
+			overtimeLastWeek: "0",	//先週の残業実績時間
+			overtimeThisWeek: "0",	//今週の残業予定時間
+			issues: "なし", //問題点
+			health: "普通", //健康状態
+		};
+
+		// textarea の高さ調整 (window.onload の外で定義)
+		const textareas = document.querySelectorAll('textarea');
+		textareas.forEach(textarea => {
+			textarea.addEventListener('input', () => {
+				adjustTextareaHeight(textarea);
+			});
+			adjustTextareaHeight(textarea); // 初期表示時にも高さを調整
+		});
+
+		function adjustTextareaHeight(textarea) {
+			textarea.style.height = 'auto'; // 一旦高さをリセット
+			textarea.style.height = textarea.scrollHeight + 'px'; // 内容に応じた高さを設定
+		}
+
+		//画面サイズ調整
+		function adjustFormSize() {
+			const container = document.getElementById('container');
+			const screenHeight = window.innerHeight;
+			const containerHeight = container.offsetHeight; // コンテンツを含む実際の高さ
+			const scale = screenHeight / containerHeight;
+
+			if (containerHeight > screenHeight) {
+				container.style.transform = `scale(${scale * 0.95})`; // 少し余裕を持たせる
+			} else {
+				container.style.transform = 'scale(1)'; // 拡大をリセット
+			}
+		}
+
+		//値の設定と画面サイズ調整実行
+		window.onload = () => {
+			document.getElementById("senderLastName").value = localStorage.getItem("senderLastName_WRG") !== null ? localStorage.getItem("senderLastName") : "";
+			document.getElementById("senderFirstName").value = localStorage.getItem("senderFirstName_WRG") !== null ? localStorage.getItem("senderFirstName") : "";
+			document.getElementById("recipient").value = localStorage.getItem("recipient_WRG") !== null ? localStorage.getItem("recipient") : "";
+			document.getElementById("recipientName").value = localStorage.getItem("recipientName_WRG") !== null ? localStorage.getItem("recipientName") : "";
+			document.getElementById("project").value = localStorage.getItem("project_WRG") !== null ? localStorage.getItem("project") : "";
+			document.getElementById("workThisWeek").value = localStorage.getItem("workThisWeek_WRG") !== null ? localStorage.getItem("workThisWeek") : "";
+			document.getElementById("workNextWeek").value = localStorage.getItem("workNextWeek_WRG") !== null ? localStorage.getItem("workNextWeek") : "";
+			document.getElementById("vacation").value = defaults.vacation;
+			document.getElementById("overtimeLastWeek").value = localStorage.getItem("overtimeLastWeek_WRG") !== null ? localStorage.getItem("overtimeLastWeek") : "";
+			document.getElementById("overtimeThisWeek").value = defaults.overtimeThisWeek;
+			document.getElementById("issues").value = defaults.issues;
+			document.getElementById("health").value = defaults.health;
+			
+			const textareas = document.querySelectorAll('textarea');
+			textareas.forEach(textarea => {
+				textarea.addEventListener('input', () => {
+					adjustTextareaHeight(textarea);
+					adjustFormSize();
+				});
+				adjustTextareaHeight(textarea);
+				adjustFormSize();
+			});
+
+			//adjustFormSize();
+		};
+		
+		// fig週前の直近の日曜日を計算する関数
+		function getSunday(fig) {
+			const today = new Date();  // 今日の日付
+			const dayOfWeek = today.getDay();  // 曜日を取得（0 = 日曜日、6 = 土曜日）
+
+			// fig週分前の日曜日を計算
+			const sundayDate = new Date(today);
+			sundayDate.setDate(today.getDate() - dayOfWeek - (fig * 7));  // fig週前の日曜日
+
+			// 日付をフォーマット（MM/DD）して返す
+			const month = String(sundayDate.getMonth() + 1).padStart(2, '0');
+			const day = String(sundayDate.getDate()).padStart(2, '0');
+			return `${month}/${day}`;
+		}
+
+		function getYear(){
+			const today=new Date();
+			const year=today.getFullYear();
+			return year;
+		}
+
+		// メール作成とリンク生成
+		function createAndClickMailLink() {
+			const thisYear=getYear();
+			const thisSunday = getSunday(0);
+			const lastSunday = getSunday(1);
+			
+			// 入力された内容を取得
+			const projectForStorage = document.getElementById("project").value;
+			const workThisWeekForStorage = document.getElementById("workThisWeek").value;
+			const workNextWeekForStorage = document.getElementById("workNextWeek").value;
+
+			const senderLastName = document.getElementById("senderLastName").value;
+			const senderFirstName = document.getElementById("senderFirstName").value;
+			const recipient = document.getElementById("recipient").value;
+			const recipientName = document.getElementById("recipientName").value;
+			const project = projectForStorage.replace(/\n/g, '\n　　');
+			const workThisWeek = workThisWeekForStorage.replace(/\n/g, '\n　　');
+			const workNextWeek = workNextWeekForStorage.replace(/\n/g, '\n　　');
+			const vacation = document.getElementById("vacation").value;
+			const overtimeLastWeek = document.getElementById("overtimeLastWeek").value;
+			const overtimeThisWeek = document.getElementById("overtimeThisWeek").value;
+			const issues = document.getElementById("issues").value;
+			const health = document.getElementById("health").value;
+			const updates = document.getElementById("updates").value.replace(/\n/g, '\n　　');
+
+			// メールの内容を生成
+			const subject = `【週報】${senderLastName}${senderFirstName}（${thisYear}/${lastSunday}週）`;
+			const body = `${recipientName}さん
+お疲れ様です。${senderLastName}です。
+週報をお送りします。
+ご査収お願いいたします。
+
+１．担当プロジェクト
+　・${project}
+
+２．当週の作業内容（進捗、問題点等）
+　・${workThisWeek}
+
+３．次週の作業予定
+　・${workNextWeek}
+
+４．その他（休暇予定、問題点、健康状態、近況・客先での案件情報　等）
+　(1)休暇予定
+　・${vacation}
+
+　(2)残業・休日出勤申請
+　・先週分　${lastSunday}週：実績 ${overtimeLastWeek}H
+　・今週分　${thisSunday}週：予定 ${overtimeThisWeek}H
+
+　(3)問題点
+　・${issues}
+
+　(4)健康状態
+　・${health}
+
+　(5)近況
+　・${updates}`;
+
+			// メールリンクを生成（mailto:形式）
+			const mailToLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+			// リンクを自動的にクリックする処理
+			const linkElement = document.createElement('a');
+			linkElement.href = mailToLink;
+			linkElement.style.display = 'none';  // 見えないようにする
+			document.body.appendChild(linkElement);
+			linkElement.click();  // 自動でクリック
+			//const link = document.getElementById("link");
+			//link.innerHTML = `<a href="${mailToLink}">xxx</a>`;
+
+			// ★ ローカルストレージに保存 ★
+			localStorage.setItem("senderLastName_WRG", senderLastName);
+			localStorage.setItem("senderFirstName_WRG", senderFirstName);
+			localStorage.setItem("recipient_WRG", recipient);
+			localStorage.setItem("recipientName_WRG", recipientName);
+			localStorage.setItem("project_WRG", projectForStorage);
+			localStorage.setItem("workThisWeek_WRG", workNextWeekForStorage); //次回 当週作業内容に今回の次週作業予定がセットされる
+			localStorage.setItem("workNextWeek_WRG", workNextWeekForStorage); //次週作業予定には同じ内容をセット 仮
+			localStorage.setItem("overtimeLastWeek_WRG", overtimeThisWeek);	//次回 実績時間に今回の予定時間がセットされる
+		}
+	</script>
+</head>
+<body>
+	<!--画面部-->
+	<div id="container">
+		<h3>週報入力フォーム</h3>
+		<form id="weekReportForm">
+			<div class="row">
+				<div>
+					<label for="senderLastName">姓：</label>
+					<input type="text" id="senderLastName" name="senderLastName" required>
+				</div>
+				<div>
+					<label for="senderFirstName">名：</label>
+					<input type="text" id="senderFirstName" name="senderFirstName" required>
+				</div>
+			</div>
+			<div class="row">
+				<div>
+					<label for="recipient">宛先アドレス：</label>
+					<input type="text" id="recipient" name="recipient" required>
+				</div>
+				<div>
+					<label for="recipientName">宛先(姓)：</label>
+					<input type="text" id="recipientName" name="recipientName" required>
+				</div>
+			</div>
+
+			<label for="project">担当プロジェクト：</label>
+			<textarea id="project" name="project" required></textarea><br>
+
+			<label for="workThisWeek">当週の作業内容：</label>
+			<textarea id="workThisWeek" name="workThisWeek" required></textarea><br>
+
+			<label for="workNextWeek">次週の作業予定：</label>
+			<textarea id="workNextWeek" name="workNextWeek" required></textarea><br>
+
+			<label for="vacation">休暇予定：</label>
+			<input type="text" id="vacation" name="vacation" required><br>
+
+			<label for="overtime">先週の残業実績時間 / 今週の残業予定時間：</label>
+			<div class="overtime">
+				<input type="number" id="overtimeLastWeek" name="overtimeLastWeek" required placeholder="先週分実績">
+				<input type="number" id="overtimeThisWeek" name="overtimeThisWeek" required placeholder="今週分予定">
+			</div><br>
+
+			<div class="issues-health">
+			    <div>
+			        <label for="issues">問題点：</label>
+			        <input type="text" id="issues" name="issues" required><br>
+			    </div>
+			    <div>
+			        <label for="health">健康状態：</label>
+			        <input type="text" id="health" name="health" required><br>
+			    </div>
+			</div>
+
+			<label for="updates">近況：</label>
+			<textarea id="updates" name="updates" required></textarea><br>
+
+			<button type="button" onclick="createAndClickMailLink()">メール生成</button>
+			<div id="link"></div>
+		</form>
+	</div>
+</body>
+</html>
