@@ -147,15 +147,15 @@
 
 		//値の設定と画面サイズ調整実行
 		window.onload = () => {
-			document.getElementById("senderLastName").value = localStorage.getItem("senderLastName_WRG") !== null ? localStorage.getItem("senderLastName_WRG") : "";
-			document.getElementById("senderFirstName").value = localStorage.getItem("senderFirstName_WRG") !== null ? localStorage.getItem("senderFirstName_WRG") : "";
-			document.getElementById("recipient").value = localStorage.getItem("recipient_WRG") !== null ? localStorage.getItem("recipient_WRG") : "";
-			document.getElementById("recipientName").value = localStorage.getItem("recipientName_WRG") !== null ? localStorage.getItem("recipientName_WRG") : "";
-			document.getElementById("project").value = localStorage.getItem("project_WRG") !== null ? localStorage.getItem("project_WRG") : "";
-			document.getElementById("workThisWeek").value = localStorage.getItem("workThisWeek_WRG") !== null ? localStorage.getItem("workThisWeek_WRG") : "";
-			document.getElementById("workNextWeek").value = localStorage.getItem("workNextWeek_WRG") !== null ? localStorage.getItem("workNextWeek_WRG") : "";
+			document.getElementById("senderLastName").value = localStorage.getItem("senderLastName_WRG_GH") !== null ? localStorage.getItem("senderLastName_WRG_GH") : "";
+			document.getElementById("senderFirstName").value = localStorage.getItem("senderFirstName_WRG_GH") !== null ? localStorage.getItem("senderFirstName_WRG_GH") : "";
+			document.getElementById("recipient").value = localStorage.getItem("recipient_WRG_GH") !== null ? localStorage.getItem("recipient_WRG_GH") : "";
+			document.getElementById("recipientName").value = localStorage.getItem("recipientName_WRG_GH") !== null ? localStorage.getItem("recipientName_WRG_GH") : "";
+			document.getElementById("project").value = localStorage.getItem("project_WRG_GH") !== null ? localStorage.getItem("project_WRG_GH") : "";
+			document.getElementById("workThisWeek").value = localStorage.getItem("workThisWeek_WRG_GH") !== null ? localStorage.getItem("workThisWeek_WRG_GH") : "";
+			document.getElementById("workNextWeek").value = localStorage.getItem("workNextWeek_WRG_GH") !== null ? localStorage.getItem("workNextWeek_WRG_GH") : "";
 			document.getElementById("vacation").value = defaults.vacation;
-			document.getElementById("overtimeLastWeek").value = localStorage.getItem("overtimeLastWeek_WRG") !== null ? localStorage.getItem("overtimeLastWeek_WRG") : "";
+			document.getElementById("overtimeLastWeek").value = localStorage.getItem("overtimeLastWeek_WRG_GH") !== null ? localStorage.getItem("overtimeLastWeek_WRG_GH") : "";
 			document.getElementById("overtimeThisWeek").value = defaults.overtimeThisWeek;
 			document.getElementById("issues").value = defaults.issues;
 			document.getElementById("health").value = defaults.health;
@@ -265,14 +265,14 @@
 			//link.innerHTML = `<a href="${mailToLink}">xxx</a>`;
 
 			// ★ ローカルストレージに保存 ★
-			localStorage.setItem("senderLastName_WRG", senderLastName);
-			localStorage.setItem("senderFirstName_WRG", senderFirstName);
-			localStorage.setItem("recipient_WRG", recipient);
-			localStorage.setItem("recipientName_WRG", recipientName);
-			localStorage.setItem("project_WRG", projectForStorage);
-			localStorage.setItem("workThisWeek_WRG", workNextWeekForStorage); //次回 当週作業内容に今回の次週作業予定がセットされる
-			localStorage.setItem("workNextWeek_WRG", workNextWeekForStorage); //次週作業予定には同じ内容をセット 仮
-			localStorage.setItem("overtimeLastWeek_WRG", overtimeThisWeek);	//次回 実績時間に今回の予定時間がセットされる
+			localStorage.setItem("senderLastName_WRG_GH", senderLastName);
+			localStorage.setItem("senderFirstName_WRG_GH", senderFirstName);
+			localStorage.setItem("recipient_WRG_GH", recipient);
+			localStorage.setItem("recipientName_WRG_GH", recipientName);
+			localStorage.setItem("project_WRG_GH", projectForStorage);
+			localStorage.setItem("workThisWeek_WRG_GH", workNextWeekForStorage); //次回 当週作業内容に今回の次週作業予定がセットされる
+			localStorage.setItem("workNextWeek_WRG_GH", workNextWeekForStorage); //次週作業予定には同じ内容をセット 仮
+			localStorage.setItem("overtimeLastWeek_WRG_GH", overtimeThisWeek);	//次回 実績時間に今回の予定時間がセットされる
 		}
 	</script>
 </head>
