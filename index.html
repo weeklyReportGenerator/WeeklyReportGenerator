@@ -147,15 +147,15 @@
 
 		//値の設定と画面サイズ調整実行
 		window.onload = () => {
-			document.getElementById("senderLastName").value = localStorage.getItem("senderLastName_WRG") !== null ? localStorage.getItem("senderLastName") : "";
-			document.getElementById("senderFirstName").value = localStorage.getItem("senderFirstName_WRG") !== null ? localStorage.getItem("senderFirstName") : "";
-			document.getElementById("recipient").value = localStorage.getItem("recipient_WRG") !== null ? localStorage.getItem("recipient") : "";
-			document.getElementById("recipientName").value = localStorage.getItem("recipientName_WRG") !== null ? localStorage.getItem("recipientName") : "";
-			document.getElementById("project").value = localStorage.getItem("project_WRG") !== null ? localStorage.getItem("project") : "";
-			document.getElementById("workThisWeek").value = localStorage.getItem("workThisWeek_WRG") !== null ? localStorage.getItem("workThisWeek") : "";
-			document.getElementById("workNextWeek").value = localStorage.getItem("workNextWeek_WRG") !== null ? localStorage.getItem("workNextWeek") : "";
+			document.getElementById("senderLastName").value = localStorage.getItem("senderLastName_WRG") !== null ? localStorage.getItem("senderLastName_WRG") : "";
+			document.getElementById("senderFirstName").value = localStorage.getItem("senderFirstName_WRG") !== null ? localStorage.getItem("senderFirstName_WRG") : "";
+			document.getElementById("recipient").value = localStorage.getItem("recipient_WRG") !== null ? localStorage.getItem("recipient_WRG") : "";
+			document.getElementById("recipientName").value = localStorage.getItem("recipientName_WRG") !== null ? localStorage.getItem("recipientName_WRG") : "";
+			document.getElementById("project").value = localStorage.getItem("project_WRG") !== null ? localStorage.getItem("project_WRG") : "";
+			document.getElementById("workThisWeek").value = localStorage.getItem("workThisWeek_WRG") !== null ? localStorage.getItem("workThisWeek_WRG") : "";
+			document.getElementById("workNextWeek").value = localStorage.getItem("workNextWeek_WRG") !== null ? localStorage.getItem("workNextWeek_WRG") : "";
 			document.getElementById("vacation").value = defaults.vacation;
-			document.getElementById("overtimeLastWeek").value = localStorage.getItem("overtimeLastWeek_WRG") !== null ? localStorage.getItem("overtimeLastWeek") : "";
+			document.getElementById("overtimeLastWeek").value = localStorage.getItem("overtimeLastWeek_WRG") !== null ? localStorage.getItem("overtimeLastWeek_WRG") : "";
 			document.getElementById("overtimeThisWeek").value = defaults.overtimeThisWeek;
 			document.getElementById("issues").value = defaults.issues;
 			document.getElementById("health").value = defaults.health;
