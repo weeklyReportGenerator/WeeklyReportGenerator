@@ -162,7 +162,11 @@
 			document.getElementById("workNextWeek").value = localStorage.getItem("workNextWeek_WRG_GH") !== null ? localStorage.getItem("workNextWeek_WRG_GH") : "";
 			document.getElementById("vacation").value = defaults.vacation;
 			document.getElementById("overtimeLastWeek").value = localStorage.getItem("overtimeLastWeek_WRG_GH") !== null ? localStorage.getItem("overtimeLastWeek_WRG_GH") : defaults.overtimeLastWeek;
-			document.getElementById("overtimeThisWeek").value = defaults.overtimeThisWeek;
+			if(document.getElementById("overtimeLastWeek").value===""){
+				document.getElementById("overtimeThisWeek").value = document.getElementById("overtimeLastWeek").value
+			}else{
+				document.getElementById("overtimeThisWeek").value = defaults.overtimeThisWeek;
+			}
 			document.getElementById("issues").value = defaults.issues;
 			document.getElementById("health").value = defaults.health;
 			
@@ -226,7 +230,16 @@
 			const issues = document.getElementById("issues").value;
 			const health = document.getElementById("health").value;
 			const updates = document.getElementById("updates").value.replace(/\n/g, '\n　　');
-
+			
+			//特殊条件
+			let overtime;
+			if(overtimeLastWeek==="" && overtimeThisWeek===""){
+				overtime=`-`;
+			}else{
+				overtime=`・先週分　${lastSunday}週：実績 ${overtimeLastWeek}H
+				　・今週分　${thisSunday}週：予定 ${overtimeThisWeek}H`;
+			}
+			
 			// メールの内容を生成
 			const subject = `【週報】${senderLastName}${senderFirstName}（${thisYear}/${lastSunday}週）`;
 			const body = `${recipientName}さん
@@ -248,8 +261,7 @@
 　・${vacation}
 
 　(2)残業・休日出勤申請
-　・先週分　${lastSunday}週：実績 ${overtimeLastWeek}H
-　・今週分　${thisSunday}週：予定 ${overtimeThisWeek}H
+　${overtime}
 
 　(3)問題点
 　・${issues}
